@@ -14,6 +14,15 @@ var blockSchema = new Schema({
   miner: {
     type: String,
     default: "Unknown"
+  },
+  size: {
+    type: Number
+  },
+  prev_block: {
+    type: String
+  },
+  next_block: {
+    type: String
   }
 });
 

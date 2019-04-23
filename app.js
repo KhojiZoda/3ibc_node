@@ -12,8 +12,10 @@ app.use(bodyParser.json());
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/Coursnodedb');
 
-const routes = require('./api/routes/blockRoutes');
-routes(app);
+const blockRoutes = require('./api/routes/blockRoutes');
+const userRoutes = require('./api/routes/userRoutes');
+blockRoutes(app);
+userRoutes(app);
 
 const hostname = '127.0.0.1';
 const port = 3000;
