@@ -11,6 +11,15 @@ var userSchema = new Schema({
   password: {
     type: String,
     required: true
+  },
+  first_name: {
+    type: String
+  },
+  last_name: {
+    type: String
+  },
+  age: {
+    type: Number
   }
 })
 
