@@ -35,3 +35,21 @@ exports.getExchangeRate = function(){
     });
   });
 }
+
+exports.getAddrInfo = function(address){
+ return new Promise((resolve, reject) =>{
+   request(baseUrl + "/rawaddr/" + address, function(err, res, body){
+     try {
+       body = JSON.parse(body);
+       var info = {
+         "hash": body.hash160,
+         "txs": body.txs
+       }
+       resolve(info);
+     } catch (e) {
+       console.log(e);
+       reject(false);
+     }
+   })
+ })
+}

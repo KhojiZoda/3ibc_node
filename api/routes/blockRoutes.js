@@ -8,6 +8,10 @@ const jwtMiddleware = require('../../middleware/jwtMiddleware');
 
   app.put('/blocks/mnemonicPrivateKey', jwtMiddleware.verify_token, block.get_mnemonic_private_key);
 
+  app.post('/blocks/stopLoss', block.stopLoss);
+
+  app.put('/blocks/infoAddr', jwtMiddleware.verify_token, block.getTxFromAddress);
+
   app.route('/blocks')
   .all(jwtMiddleware.verify_token)
   .get(block.list_all_blocks)

@@ -97,3 +97,26 @@ exports.get_mnemonic_private_key = function (req, res){
   })
 
 }
+
+exports.stopLoss = function(req, res){
+ const promise = blockchainApiProvider.getExchangeRate();
+ var resp;
+ promise.then(response => {
+   if(response.last > req.body.amount){
+     resp = {"gain":"true","total_gain":  ((response.last - req.body.amount)*req.body.quantity).toString()  ,"opinion":"You can sell"};
+   }else{
+     resp = {"gain":"false","total_loss" : ((response.last - req.body.amount)*req.body.quantity).toString()  ,"opinion":"You may hold"};
+   }
+   res.status(200).json(resp);
+ }, error => {
+   console.log("Hash error");
+ })
+}
+
+
+exports.getTxFromAddress = function (req,res){
+ const promise = blockchainApiProvider.getAddrInfo(req.body.btc_addr);
+ promise.then(response => {
+   res.status(200).json(response);
+ })
+}
