@@ -18,8 +18,8 @@ var userSchema = new Schema({
   last_name: {
     type: String
   },
-  age: {
-    type: Number
+  btc_addr: {
+    type: String
   }
 })
 

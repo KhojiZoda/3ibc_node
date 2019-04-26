@@ -1,5 +1,15 @@
 const Block = require('../models/blockModel');
+const User = require('../models/userModel');
 const blockchainApiProvider = require('../../providers/blockchainApiProvider');
+const bip39 = require("bip39");
+const bip32 = require("bip32");
+const bip44 = require("bip44");
+const bitcoin = require('bitcoinjs-lib');
+var crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+
+
+
 exports.list_all_blocks = function(req, res){
   Block.find({}, function(err, block){
     if(err) res.send(err);
@@ -52,3 +62,38 @@ exports.delete_a_block = function(req, res) {
     res.json({ message: 'Block successfully deleted' });
   });
 };
+
+
+exports.get_exchange = function(req, res){
+  const promise = blockchainApiProvider.getExchangeRate();
+  promise.then(response => {
+    res.status(200).json(response);
+  }, error => {
+    console.log("Hash error");
+  })
+}
+
+exports.gen_mnemonic = function (req,res){
+  var  randomBytes = crypto.randomBytes(16)
+  var mnemonic = bip39.entropyToMnemonic(randomBytes.toString('hex'))
+  res.json({mnemonic});
+}
+
+
+function getAddress (node, network) {
+  return bitcoin.payments.p2pkh({ pubkey: node.publicKey, network }).address
+}
+
+exports.get_mnemonic_private_key = function (req, res){
+  var decoded = jwt.decode(req.headers['authorization'], {complete: true});
+  var current_user = decoded.payload.user;
+  var seed = bip39.mnemonicToSeed(req.body.mnemonic);
+  var root = bip32.fromSeed(seed);
+  var dp = root.derivePath("m/140'/0'/0'/0/5");
+  var addr = getAddress(dp);
+  User.findOneAndUpdate({email: current_user.email}, {$set: { btc_addr: addr }}, {new: true}, (err, done)=>{
+    if(err) res.send(err);
+    res.json({user: done});
+  })
+
+}

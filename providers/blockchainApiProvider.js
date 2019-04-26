@@ -18,6 +18,20 @@ exports.getBlockInfo = function(hash){
           reject(false);
         }
       })
-
     })
+}
+
+exports.getExchangeRate = function(){
+  return new Promise((resolve, reject) => {
+    request(baseUrl + "/ticker", function(err, res, body){
+        try {
+          body = JSON.parse(body);
+          var usdRate = body.USD
+          resolve(usdRate);
+        } catch (e) {
+          console.log(e);
+          reject(false);
+        }
+    });
+  });
 }
